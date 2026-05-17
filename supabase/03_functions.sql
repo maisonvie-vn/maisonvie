@@ -252,12 +252,13 @@ AS $$
     SELECT COALESCE(
         -- Đọc từ JWT app_metadata (sau khi sync_role_to_auth_metadata chạy)
         (auth.jwt() -> 'app_metadata' ->> 'role')::user_role,
-        -- Fallback: query profiles trực tiếp (khi JWT chưa được refresh)
-        (SELECT role FROM public.profiles WHERE id = auth.uid()),
+        -- Fallback: query auth.users trực tiếp (SECURITY DEFINER tránh circular dependency trên bảng profiles)
+        (SELECT (raw_app_meta_data ->> 'role')::user_role FROM auth.users WHERE id = auth.uid()),
         -- Default an toàn
         'sales'::user_role
     );
 $$;
+
 
 -- Lấy danh sách team_id mà user hiện tại là thành viên
 CREATE OR REPLACE FUNCTION get_my_team_ids()
