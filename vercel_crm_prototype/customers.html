@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+
+<html lang="vi"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                "surface-container-highest": "#eae1d7",
+                "outline-variant": "#d2c5b1",
+                "surface-container-lowest": "#ffffff",
+                "on-surface-variant": "#4f4637",
+                "on-tertiary": "#ffffff",
+                "error": "#ba1a1a",
+                "primary-fixed": "#ffdea6",
+                "surface-variant": "#eae1d7",
+                "tertiary-fixed": "#e2e2e2",
+                "primary": "#7b5800",
+                "on-surface": "#1f1b15",
+                "tertiary-container": "#a0a1a1",
+                "surface-container-high": "#f0e7dd",
+                "on-background": "#1f1b15",
+                "inverse-surface": "#343029",
+                "on-tertiary-container": "#363838",
+                "on-secondary-container": "#66645f",
+                "secondary-fixed": "#e6e2db",
+                "error-container": "#ffdad6",
+                "on-secondary-fixed": "#1c1c18",
+                "inverse-primary": "#f1bf5e",
+                "on-error": "#ffffff",
+                "inverse-on-surface": "#f8efe5",
+                "on-secondary-fixed-variant": "#484742",
+                "primary-container": "#c89a3d",
+                "on-primary-fixed": "#271900",
+                "tertiary": "#5d5f5f",
+                "on-primary-fixed-variant": "#5d4200",
+                "on-secondary": "#ffffff",
+                "on-error-container": "#93000a",
+                "secondary": "#605e59",
+                "surface-dim": "#e1d9cf",
+                "on-primary": "#ffffff",
+                "on-tertiary-fixed": "#1a1c1c",
+                "surface-tint": "#7b5800",
+                "background": "#fff8f3",
+                "surface": "#fff8f3",
+                "outline": "#817665",
+                "surface-container-low": "#fbf2e8",
+                "surface-container": "#f6ece3",
+                "primary-fixed-dim": "#f1bf5e",
+                "on-primary-container": "#4b3400",
+                "surface-bright": "#fff8f3",
+                "secondary-container": "#e6e2db",
+                "tertiary-fixed-dim": "#c6c6c7",
+                "secondary-fixed-dim": "#c9c6c0",
+                "on-tertiary-fixed-variant": "#454747"
+            },
+            "borderRadius": {
+                "DEFAULT": "0.25rem",
+                "lg": "0.5rem",
+                "xl": "0.75rem",
+                "full": "9999px"
+            },
+            "spacing": {
+                "stack-sm": "8px",
+                "stack-lg": "32px",
+                "sidebar-width": "280px",
+                "gutter": "24px",
+                "container-padding": "32px",
+                "header-height": "72px",
+                "stack-md": "16px"
+            },
+            "fontFamily": {
+                "headline-sm": ["Inter"],
+                "body-sm": ["Inter"],
+                "body-md": ["Inter"],
+                "headline-lg-mobile": ["Inter"],
+                "body-lg": ["Inter"],
+                "headline-lg": ["Inter"],
+                "display-lg": ["Inter"],
+                "label-md": ["Inter"],
+                "headline-md": ["Inter"]
+            },
+            "fontSize": {
+                "headline-sm": ["20px", {"lineHeight": "28px", "fontWeight": "600"}],
+                "body-sm": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                "headline-lg-mobile": ["28px", {"lineHeight": "36px", "fontWeight": "600"}],
+                "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}],
+                "headline-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                "display-lg": ["48px", {"lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                "label-md": ["12px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "600"}],
+                "headline-md": ["24px", {"lineHeight": "32px", "fontWeight": "600"}]
+            }
+          },
+        },
+      }
+    </script>
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <!-- Layout Placeholders -->
+    <div id="sidebar-placeholder"></div>
+    <div id="header-placeholder"></div>
+
+    <!-- Main Content -->
+    <main class="pt-[104px] pl-[312px] pr-8 pb-12">
+        <div class="max-w-[1400px] mx-auto">
+            <!-- Header -->
+            <div class="flex items-end justify-between mb-10">
+                <div>
+                    <h2 class="text-3xl font-extrabold text-on-surface">Danh sách Khách hàng</h2>
+                    <p class="text-secondary/60 mt-1">Quản lý và theo dõi thông tin đối tác của Yến Sào Vĩnh Hưng.</p>
+                </div>
+                <button onclick="UI.openAddLeadModal()" class="bg-primary text-white px-6 py-3 rounded-2xl text-sm font-bold shadow-lg hover:-translate-y-0.5 transition-all flex items-center gap-2">
+                    <span class="material-symbols-outlined text-lg">person_add</span> Thêm khách hàng
+                </button>
+            </div>
+
+            <!-- Stats Bento -->
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-10">
+                <div class="glass-card p-6 rounded-3xl border-primary/5">
+                    <p class="text-[10px] font-bold text-secondary/40 uppercase tracking-widest mb-1">Tổng khách hàng</p>
+                    <p class="text-3xl font-extrabold text-primary" id="stat-total-customers">1,248</p>
+                </div>
+                <div class="glass-card p-6 rounded-3xl border-primary/5">
+                    <p class="text-[10px] font-bold text-secondary/40 uppercase tracking-widest mb-1">Khách hàng VIP</p>
+                    <p class="text-3xl font-extrabold text-primary" id="stat-vip-customers">142</p>
+                </div>
+                <div class="glass-card p-6 rounded-3xl border-primary/5">
+                    <p class="text-[10px] font-bold text-secondary/40 uppercase tracking-widest mb-1">Đại lý</p>
+                    <p class="text-3xl font-extrabold text-primary" id="stat-agencies">86</p>
+                </div>
+                <div class="glass-card p-6 rounded-3xl border-primary/5">
+                    <p class="text-[10px] font-bold text-secondary/40 uppercase tracking-widest mb-1">Mới tháng này</p>
+                    <div class="flex items-center gap-2">
+                        <p class="text-3xl font-extrabold text-primary">+24</p>
+                        <span class="text-emerald-500 font-bold text-xs bg-emerald-50 px-2 py-0.5 rounded-full">+12%</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Customer Table -->
+            <div class="glass-card rounded-[32px] overflow-hidden border-secondary/5 shadow-sm">
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left">
+                        <thead>
+                            <tr class="border-b border-secondary/5 bg-white/30">
+                                <th class="px-8 py-6 text-[10px] font-bold text-secondary/40 uppercase tracking-[0.2em]">Họ và Tên</th>
+                                <th class="px-8 py-6 text-[10px] font-bold text-secondary/40 uppercase tracking-[0.2em]">Số điện thoại</th>
+                                <th class="px-8 py-6 text-[10px] font-bold text-secondary/40 uppercase tracking-[0.2em]">Phân khúc</th>
+                                <th class="px-8 py-6 text-[10px] font-bold text-secondary/40 uppercase tracking-[0.2em]">Trạng thái</th>
+                                <th class="px-8 py-6 text-[10px] font-bold text-secondary/40 uppercase tracking-[0.2em] text-right">Thao tác</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-secondary/5" id="customer-table-body">
+                            <!-- Populated by JS -->
+                        </tbody>
+                    </table>
+                </div>
+                <!-- Pagination -->
+                <div class="px-8 py-6 bg-white/30 border-t border-secondary/5 flex items-center justify-between">
+                    <span class="text-xs font-bold text-secondary/40">Hiển thị 10 trên 1,248 khách hàng</span>
+                    <div class="flex items-center gap-2">
+                        <button class="w-10 h-10 rounded-xl border border-secondary/10 flex items-center justify-center text-secondary/40 hover:bg-white transition-all disabled:opacity-30" disabled>
+                            <span class="material-symbols-outlined">chevron_left</span>
+                        </button>
+                        <button class="w-10 h-10 rounded-xl bg-primary text-white text-xs font-bold shadow-lg">1</button>
+                        <button class="w-10 h-10 rounded-xl border border-secondary/10 text-secondary/60 text-xs font-bold hover:bg-white transition-all">2</button>
+                        <button class="w-10 h-10 rounded-xl border border-secondary/10 text-secondary/60 text-xs font-bold hover:bg-white transition-all">3</button>
+                        <button class="w-10 h-10 rounded-xl border border-secondary/10 flex items-center justify-center text-secondary/40 hover:bg-white transition-all">
+                            <span class="material-symbols-outlined">chevron_right</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Global Scripts -->
+    <script src="js/data.js"></script>
+    <script src="js/shared.js"></script>
+    <script src="js/ui-actions.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            renderCustomers();
+            updateStats();
+        });
+
+        function renderCustomers() {
+            const tbody = document.getElementById('customer-table-body');
+            tbody.innerHTML = CRM_DATA.customers.map(c => `
+                <tr class="hover:bg-primary/5 transition-all cursor-pointer group" onclick="showCustomerDetail(${c.id})">
+                    <td class="px-8 py-6">
+                        <div class="flex items-center gap-4">
+                            <div class="w-12 h-12 rounded-2xl bg-secondary/5 flex items-center justify-center text-primary font-extrabold border-2 border-white shadow-sm group-hover:scale-110 transition-transform">
+                                ${c.name.split(' ').map(n => n[0]).join('').slice(0, 2)}
+                            </div>
+                            <div>
+                                <p class="text-sm font-bold text-on-surface">${c.name}</p>
+                                <p class="text-[11px] text-secondary/60">${c.company}</p>
+                            </div>
+                        </div>
+                    </td>
+                    <td class="px-8 py-6 text-sm font-bold text-secondary/60">${c.phone}</td>
+                    <td class="px-8 py-6">
+                        <span class="badge ${c.type === 'VIP' ? 'badge-vip' : c.type === 'Đại lý' ? 'badge-agency' : 'badge-retail'}">
+                            ${c.type}
+                        </span>
+                    </td>
+                    <td class="px-8 py-6">
+                        <div class="flex items-center gap-2">
+                            <span class="w-1.5 h-1.5 rounded-full ${getStageColor(c.status)}"></span>
+                            <span class="text-xs font-bold text-on-surface/80">${c.status}</span>
+                        </div>
+                    </td>
+                    <td class="px-8 py-6 text-right">
+                        <button class="w-10 h-10 rounded-xl hover:bg-white text-secondary/30 hover:text-primary transition-all">
+                            <span class="material-symbols-outlined">more_vert</span>
+                        </button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        function getStageColor(stage) {
+            switch(stage) {
+                case 'Mới': return 'bg-slate-400';
+                case 'Đang tư vấn': return 'bg-blue-400';
+                case 'Gửi báo giá': return 'bg-amber-400';
+                case 'Đàm phán': return 'bg-orange-400';
+                case 'Chốt đơn': return 'bg-emerald-500';
+                case 'Thất bại': return 'bg-red-400';
+                default: return 'bg-slate-400';
+            }
+        }
+
+        function updateStats() {
+            document.getElementById('stat-total-customers').textContent = CRM_DATA.customers.length.toLocaleString();
+            document.getElementById('stat-vip-customers').textContent = CRM_DATA.customers.filter(c => c.type === 'VIP').length;
+            document.getElementById('stat-agencies').textContent = CRM_DATA.customers.filter(c => c.type === 'Đại lý').length;
+        }
+
+        function showCustomerDetail(id) {
+            const c = CRM_DATA.customers.find(item => item.id === id);
+            const content = `
+                <div class="space-y-6">
+                    <div class="flex items-center gap-4">
+                        <div class="w-16 h-16 rounded-2xl bg-primary/10 flex items-center justify-center text-primary text-2xl font-bold">
+                            ${c.name.charAt(0)}
+                        </div>
+                        <div>
+                            <h4 class="text-xl font-bold text-on-surface">${c.name}</h4>
+                            <p class="text-sm text-secondary/60">${c.company}</p>
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-2 gap-4">
+                        <div class="p-4 rounded-2xl bg-secondary/5">
+                            <p class="text-[10px] font-bold text-secondary/40 uppercase mb-1">Số điện thoại</p>
+                            <p class="font-extrabold text-on-surface">${c.phone}</p>
+                        </div>
+                        <div class="p-4 rounded-2xl bg-secondary/5">
+                            <p class="text-[10px] font-bold text-secondary/40 uppercase mb-1">Email</p>
+                            <p class="font-extrabold text-on-surface truncate text-xs">${c.email}</p>
+                        </div>
+                    </div>
+                    <div class="space-y-2">
+                        <p class="text-[10px] font-bold text-secondary/40 uppercase">Ghi chú gần nhất</p>
+                        <div class="p-4 rounded-2xl border border-secondary/5 bg-white/40 italic text-sm text-secondary/80">
+                            "Khách quan tâm đến dòng Yến tinh chế cao cấp làm quà biếu đối tác Nhật Bản."
+                        </div>
+                    </div>
+                </div>
+            `;
+            UI.showModal('Hồ sơ Khách hàng', content, `
+                <button onclick="UI.simulateAction()" class="bg-primary text-white px-8 py-2.5 rounded-xl text-sm font-bold shadow-lg">Cập nhật hồ sơ</button>
+            `);
+        }
+    </script>
+</body>
