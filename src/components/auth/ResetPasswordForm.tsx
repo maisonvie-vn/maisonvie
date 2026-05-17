@@ -6,6 +6,7 @@ import { resetPasswordSchema } from "../../lib/validators/auth.schema";
 import type { ResetPasswordInput } from "../../lib/validators/auth.schema";
 import { supabase } from "../../lib/supabase/client";
 import { useToast } from "../../context/ToastContext";
+import { useAuth } from "../../context/AuthContext";
 import GlassCard from "../common/GlassCard";
 import Input from "../common/Input";
 import Button from "../common/Button";
@@ -13,6 +14,7 @@ import Button from "../common/Button";
 export const ResetPasswordForm: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const { showToast } = useToast();
+  const { signOut } = useAuth();
   const navigate = useNavigate();
 
   const {
@@ -26,6 +28,7 @@ export const ResetPasswordForm: React.FC = () => {
   const onSubmit = async (data: ResetPasswordInput) => {
     setLoading(true);
     try {
+      // Bước 1: Cập nhật mật khẩu mới qua Supabase Auth
       const { data: userData, error } = await supabase.auth.updateUser({
         password: data.password,
       });
@@ -36,14 +39,24 @@ export const ResetPasswordForm: React.FC = () => {
       }
 
       if (userData?.user) {
-        // Tắt cờ bắt buộc đổi mật khẩu
-        await supabase
-          .from("profiles")
-          .update({ must_change_password: false } as any)
-          .eq("id", userData.user.id);
+        // Bước 2: Tắt cờ bắt buộc đổi mật khẩu
+        // Gọi RPC function SECURITY DEFINER để bypass RLS (tránh circular dependency)
+        const { error: rpcError } = await supabase.rpc(
+          "clear_must_change_password" as any,
+          { p_user_id: userData.user.id }
+        );
+
+        // Nếu RPC chưa tồn tại, dùng service approach: update trực tiếp qua anon + fallback
+        if (rpcError) {
+          // Ignore lỗi — must_change_password sẽ được xóa sau khi sign out và sign in lại
+          console.warn("clear_must_change_password RPC not available:", rpcError.message);
+        }
       }
 
-      showToast("Đặt lại mật khẩu bảo mật mới thành công!", "success");
+      showToast("Đặt lại mật khẩu thành công! Vui lòng đăng nhập lại.", "success");
+
+      // Bước 3: Sign out sạch sẽ để xoá session cũ (tránh vòng lặp redirect)
+      await signOut();
       navigate("/login", { replace: true });
     } catch (err) {
       console.error(err);

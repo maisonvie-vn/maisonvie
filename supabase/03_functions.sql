@@ -290,3 +290,32 @@ SET search_path = public
 AS $$
     SELECT get_my_role() = 'team_lead'::user_role;
 $$;
+
+-- ============================================================
+-- FUNCTION: clear_must_change_password
+--
+-- Mục đích: Tắt cờ bắt buộc đổi mật khẩu sau khi user đặt
+-- mật khẩu mới lần đầu. Dùng SECURITY DEFINER để bypass RLS
+-- (tránh vòng lặp đệ quy: profiles_update_own → get_my_role → profiles).
+--
+-- Bảo mật: Chỉ user hiện tại mới được gọi (auth.uid() = p_user_id).
+-- ============================================================
+CREATE OR REPLACE FUNCTION clear_must_change_password(p_user_id UUID)
+RETURNS VOID
+LANGUAGE plpgsql
+SECURITY DEFINER
+SET search_path = public
+AS $$
+BEGIN
+    -- Chỉ user hiện tại được tắt cờ của chính họ
+    IF auth.uid() IS NULL OR auth.uid() <> p_user_id THEN
+        RAISE EXCEPTION 'Không được phép thực hiện thao tác này';
+    END IF;
+
+    UPDATE public.profiles
+    SET    must_change_password = FALSE,
+           updated_at           = NOW()
+    WHERE  id = p_user_id;
+END;
+$$;
+
