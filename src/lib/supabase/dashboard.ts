@@ -105,7 +105,7 @@ export const getDashboardStats = async ({
   const { data: stages } = await supabase
     .from("pipeline_stages")
     .select("id, name")
-    .order("order_num", { ascending: true });
+    .order("sort_order", { ascending: true });
 
   let distQuery = supabase
     .from("opportunities")

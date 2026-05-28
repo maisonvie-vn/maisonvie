@@ -121,7 +121,7 @@ export interface Database {
           id: string;
           organization_id: string;
           name: string;
-          order_num: number;
+          sort_order: number;
           is_terminal: boolean;
           color: string | null;
           created_at: string;
@@ -131,7 +131,7 @@ export interface Database {
           id?: string;
           organization_id: string;
           name: string;
-          order_num: number;
+          sort_order: number;
           is_terminal?: boolean;
           color?: string | null;
           created_at?: string;
@@ -141,7 +141,7 @@ export interface Database {
           id?: string;
           organization_id?: string;
           name?: string;
-          order_num?: number;
+          sort_order?: number;
           is_terminal?: boolean;
           color?: string | null;
           created_at?: string;
