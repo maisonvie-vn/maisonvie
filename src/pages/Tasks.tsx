@@ -15,6 +15,7 @@ import Button from "../components/common/Button";
 import Input from "../components/common/Input";
 import Badge from "../components/common/Badge";
 import ConfirmDialog from "../components/common/ConfirmDialog";
+import Skeleton from "../components/common/Skeleton";
 
 export const Tasks: React.FC = () => {
   const { profile, role } = useAuth();
