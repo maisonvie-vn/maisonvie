@@ -26,7 +26,7 @@ export const getOpportunities = async ({
   let query = supabase
     .from("opportunities")
     .select("*, leads(full_name, phone_primary, segment)")
-    .is("deleted_at", null);
+    .eq("is_active", true);
 
   // Apply role filtering to be extremely safe
   if (userRole === "sales" && userId) {
@@ -85,7 +85,7 @@ export const updateOpportunityStage = async (id: string, stageId: string) => {
 export const deleteOpportunity = async (id: string) => {
   const { data, error } = await supabase
     .from("opportunities")
-    .update({ deleted_at: new Date().toISOString() })
+    .update({ is_active: false, updated_at: new Date().toISOString() })
     .eq("id", id)
     .select()
     .single();

@@ -25,7 +25,7 @@ export const getPayments = async ({
 
   // Filters
   if (status) {
-    query = query.eq("status", status);
+    query = query.eq("payment_status", status);
   }
   if (method) {
     query = query.eq("payment_method", method);

@@ -15,19 +15,19 @@ export const getLeads = async ({
   // Build base query
   let query = supabase
     .from("leads")
-    .select("*", { count: "exact" })
-    .is("deleted_at", null);
+    .select("*", { count: "exact" });
+
+  if (status === "inactive") {
+    query = query.eq("is_active", false);
+  } else {
+    query = query.eq("is_active", true);
+  }
 
   // Apply search filter (phone or name or email)
   if (search) {
     query = query.or(
       `full_name.ilike.%${search}%,phone_primary.ilike.%${search}%,email.ilike.%${search}%`,
     );
-  }
-
-  // Apply status filter
-  if (status) {
-    query = query.eq("status", status);
   }
 
   // Apply segment filter
@@ -84,7 +84,7 @@ export const deleteLead = async (id: string) => {
   // Soft delete as defined by schema
   const { data, error } = await supabase
     .from("leads")
-    .update({ deleted_at: new Date().toISOString() })
+    .update({ is_active: false, updated_at: new Date().toISOString() })
     .eq("id", id)
     .select()
     .single();
@@ -105,7 +105,7 @@ export const checkDuplicateLead = async (
   let query = supabase
     .from("leads")
     .select("id, full_name")
-    .is("deleted_at", null);
+    .eq("is_active", true);
 
   if (phone && email) {
     query = query.or(`phone_primary.eq.${phone},email.eq.${email}`);

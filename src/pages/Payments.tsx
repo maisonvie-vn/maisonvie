@@ -117,7 +117,7 @@ export const Payments: React.FC = () => {
     setEditingPayment(payment);
     setAmount(payment.amount);
     setMethod(payment.payment_method);
-    setStatus(payment.status);
+    setStatus(payment.payment_status);
     setLeadId(payment.lead_id);
     setNotes(payment.notes || "");
     setModalOpen(true);
@@ -141,7 +141,7 @@ export const Payments: React.FC = () => {
       lead_id: leadId,
       amount,
       payment_method: method,
-      status,
+      payment_status: status,
       notes: notes || null,
       recorded_by: userId,
     };
@@ -149,7 +149,7 @@ export const Payments: React.FC = () => {
     if (editingPayment) {
       // Accountant updates only status or notes
       const updates = isAccountant
-        ? { status, notes: notes || null }
+        ? { payment_status: status, notes: notes || null }
         : { amount, payment_method: method, notes: notes || null };
 
       updateMutation.mutate({ id: editingPayment.id, updates });
@@ -215,7 +215,7 @@ export const Payments: React.FC = () => {
     },
     {
       header: "Trạng thái",
-      accessor: (row) => getStatusBadge(row.status),
+      accessor: (row) => getStatusBadge(row.payment_status),
     },
     {
       header: "Hành động",
