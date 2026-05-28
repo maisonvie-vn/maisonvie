@@ -18,7 +18,8 @@ export const getTasks = async ({
 
   // Apply filters
   if (status) {
-    query = query.eq("status", status);
+    const dbStatus = status === "completed" ? "done" : status;
+    query = query.eq("status", dbStatus);
   }
   if (priority) {
     query = query.eq("priority", priority);
@@ -35,36 +36,52 @@ export const getTasks = async ({
   const { data, error } = await query;
 
   if (error) throw error;
-  return data as (Task & { leads: { full_name: string } | null })[];
+  return (data as any[]).map(t => ({
+    ...t,
+    status: t.status === "done" ? "completed" : t.status
+  })) as (Task & { leads: { full_name: string } | null })[];
 };
 
-export const createTask = async (task: InsertTables<"tasks">) => {
+export const createTask = async (task: any) => {
+  const dbPayload = {
+    ...task,
+    status: task.status === "completed" ? "done" : task.status
+  };
   const { data, error } = await supabase
     .from("tasks")
-    .insert(task)
+    .insert(dbPayload)
     .select()
     .single();
 
   if (error) throw error;
-  return data as Task;
+  return {
+    ...data,
+    status: data.status === "done" ? "completed" : data.status
+  } as Task;
 };
 
-export const updateTask = async (id: string, task: UpdateTables<"tasks">) => {
-  // If task status is set to completed, also record completed_at
-  const updates = { ...task, updated_at: new Date().toISOString() };
+export const updateTask = async (id: string, task: any) => {
+  const dbPayload = {
+    ...task,
+    status: task.status === "completed" ? "done" : task.status,
+    updated_at: new Date().toISOString()
+  };
   if (task.status === "completed") {
-    updates.completed_at = new Date().toISOString();
+    dbPayload.completed_at = new Date().toISOString();
   }
 
   const { data, error } = await supabase
     .from("tasks")
-    .update(updates)
+    .update(dbPayload)
     .eq("id", id)
     .select()
     .single();
 
   if (error) throw error;
-  return data as Task;
+  return {
+    ...data,
+    status: data.status === "done" ? "completed" : data.status
+  } as Task;
 };
 
 export const deleteTask = async (id: string) => {

@@ -201,7 +201,7 @@ export const Tasks: React.FC = () => {
         <GlassCard className="p-4 flex items-center justify-between">
           <span className="text-xs text-gray-400 font-light">Chưa làm</span>
           <span className="text-base font-medium text-gray-800">
-            {tasks?.filter((t) => t.status === "todo").length || 0}
+            {(tasks || []).filter((t) => t.status === "todo").length}
           </span>
         </GlassCard>
         <GlassCard className="p-4 flex items-center justify-between">
@@ -209,7 +209,7 @@ export const Tasks: React.FC = () => {
             Đang tiến hành
           </span>
           <span className="text-base font-medium text-[#C89A3D]">
-            {tasks?.filter((t) => t.status === "in_progress").length || 0}
+            {(tasks || []).filter((t) => t.status === "in_progress").length}
           </span>
         </GlassCard>
         <GlassCard className="p-4 flex items-center justify-between">
@@ -217,7 +217,7 @@ export const Tasks: React.FC = () => {
             Đã hoàn thành
           </span>
           <span className="text-base font-medium text-emerald-600">
-            {tasks?.filter((t) => t.status === "completed").length || 0}
+            {(tasks || []).filter((t) => t.status === "completed").length}
           </span>
         </GlassCard>
 
