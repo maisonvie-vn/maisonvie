@@ -201,7 +201,6 @@ export const Leads: React.FC = () => {
       phone_primary: normalizePhone(phone),
       email: email || null,
       segment,
-      status,
       product_interests: productInterest ? [productInterest] : [],
       notes: notes || null,
       assigned_to: userId,
@@ -302,7 +301,6 @@ export const Leads: React.FC = () => {
                   : row["Phân khúc"] === "Đại lý"
                     ? "agent"
                     : "retail",
-              status: "new",
               notes: row["Ghi chú"] || row["notes"] || null,
               assigned_to: userId,
             });
@@ -360,11 +358,11 @@ export const Leads: React.FC = () => {
     {
       header: "Trạng thái",
       accessor: (row) => {
-        if (row.status === "new")
-          return <span className="text-amber-600">Mới</span>;
-        if (row.status === "contacted")
-          return <span className="text-sky-600">Đã liên hệ</span>;
-        return <span className="text-green-600">Đơn hàng thành công</span>;
+        return row.is_active ? (
+          <span className="text-green-600 font-light">Hoạt động</span>
+        ) : (
+          <span className="text-gray-400 font-light">Ngừng hoạt động</span>
+        );
       },
     },
     {
@@ -442,10 +440,8 @@ export const Leads: React.FC = () => {
           onChange={(e) => setStatusFilter(e.target.value)}
           className="px-4 py-2 rounded-xl border border-gray-200 bg-white/50 text-xs font-light focus:border-[#C89A3D] outline-none"
         >
-          <option value="">Tất cả Trạng thái</option>
-          <option value="new">Mới</option>
-          <option value="contacted">Đã liên hệ</option>
-          <option value="won">Đơn hàng thành công</option>
+          <option value="">Hoạt động (Mặc định)</option>
+          <option value="inactive">Ngừng hoạt động</option>
         </select>
 
         <select
