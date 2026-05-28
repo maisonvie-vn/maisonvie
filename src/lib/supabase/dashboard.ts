@@ -35,7 +35,7 @@ export const getDashboardStats = async ({
   // 3. Query Open Opportunities
   let oppsQuery = supabase
     .from("opportunities")
-    .select("id, value", { count: "exact" })
+    .select("id, expected_value", { count: "exact" })
     .eq("is_active", true)
     .is("closed_at", null);
 
@@ -45,7 +45,7 @@ export const getDashboardStats = async ({
   const { data: openOpps, count: openOppsCount } = await oppsQuery;
 
   const pipelineValue = (openOpps || []).reduce(
-    (sum, opp) => sum + (opp.value || 0),
+    (sum, opp: any) => sum + Number(opp.expected_value || 0),
     0,
   );
 
@@ -109,7 +109,7 @@ export const getDashboardStats = async ({
 
   let distQuery = supabase
     .from("opportunities")
-    .select("stage_id, value")
+    .select("stage_id, expected_value")
     .eq("is_active", true);
 
   if (userRole === "sales" && userId) {
@@ -124,7 +124,7 @@ export const getDashboardStats = async ({
     return {
       name: stage.name,
       count: oppsInStage.length,
-      value: oppsInStage.reduce((sum, o) => sum + (o.value || 0), 0),
+      value: oppsInStage.reduce((sum, o: any) => sum + Number(o.expected_value || 0), 0),
     };
   });
 
@@ -135,7 +135,10 @@ export const getDashboardStats = async ({
       pipelineValue,
       monthlyRevenue,
     },
-    recentOpportunities: (recentOpps || []) as (Opportunity & {
+    recentOpportunities: (recentOpps || []).map((opp: any) => ({
+      ...opp,
+      value: Number(opp.expected_value || 0)
+    })) as (Opportunity & {
       leads: { full_name: string; phone_primary: string };
     })[],
     todayTasks: (todayTasks || []) as (Task & {

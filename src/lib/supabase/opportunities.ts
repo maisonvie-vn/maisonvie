@@ -36,35 +36,58 @@ export const getOpportunities = async ({
   const { data, error } = await query;
 
   if (error) throw error;
-  return data as (Opportunity & {
+  return (data as any[]).map(opp => ({
+    ...opp,
+    value: Number(opp.expected_value || 0)
+  })) as (Opportunity & {
     leads: { full_name: string; phone_primary: string; segment: string };
   })[];
 };
 
-export const createOpportunity = async (opp: InsertTables<"opportunities">) => {
+export const createOpportunity = async (opp: any) => {
+  const dbPayload = {
+    lead_id: opp.lead_id,
+    stage_id: opp.stage_id,
+    title: opp.title,
+    expected_value: opp.value || 0,
+    assigned_to: opp.assigned_to,
+  };
   const { data, error } = await supabase
     .from("opportunities")
-    .insert(opp)
+    .insert(dbPayload)
     .select()
     .single();
 
   if (error) throw error;
-  return data as Opportunity;
+  return {
+    ...data,
+    value: Number(data.expected_value || 0)
+  } as Opportunity;
 };
 
 export const updateOpportunity = async (
   id: string,
-  opp: UpdateTables<"opportunities">,
+  opp: any,
 ) => {
+  const dbPayload: any = {};
+  if (opp.lead_id !== undefined) dbPayload.lead_id = opp.lead_id;
+  if (opp.stage_id !== undefined) dbPayload.stage_id = opp.stage_id;
+  if (opp.title !== undefined) dbPayload.title = opp.title;
+  if (opp.value !== undefined) dbPayload.expected_value = opp.value;
+  if (opp.assigned_to !== undefined) dbPayload.assigned_to = opp.assigned_to;
+
   const { data, error } = await supabase
     .from("opportunities")
-    .update({ ...opp, updated_at: new Date().toISOString() })
+    .update({ ...dbPayload, updated_at: new Date().toISOString() })
     .eq("id", id)
     .select()
     .single();
 
   if (error) throw error;
-  return data as Opportunity;
+  return {
+    ...data,
+    value: Number(data.expected_value || 0)
+  } as Opportunity;
 };
 
 export const updateOpportunityStage = async (id: string, stageId: string) => {
@@ -79,7 +102,10 @@ export const updateOpportunityStage = async (id: string, stageId: string) => {
     .single();
 
   if (error) throw error;
-  return data as Opportunity;
+  return {
+    ...data,
+    value: Number(data.expected_value || 0)
+  } as Opportunity;
 };
 
 export const deleteOpportunity = async (id: string) => {
@@ -91,5 +117,8 @@ export const deleteOpportunity = async (id: string) => {
     .single();
 
   if (error) throw error;
-  return data as Opportunity;
+  return {
+    ...data,
+    value: Number(data.expected_value || 0)
+  } as Opportunity;
 };

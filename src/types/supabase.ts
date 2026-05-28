@@ -239,7 +239,7 @@ export interface Database {
           lead_id: string;
           stage_id: string;
           title: string;
-          value: number;
+          expected_value: number;
           probability: number | null;
           notes: string | null;
           assigned_to: string | null;
@@ -255,7 +255,7 @@ export interface Database {
           lead_id: string;
           stage_id: string;
           title: string;
-          value?: number;
+          expected_value?: number;
           probability?: number | null;
           notes?: string | null;
           assigned_to?: string | null;
@@ -271,7 +271,7 @@ export interface Database {
           lead_id?: string;
           stage_id?: string;
           title?: string;
-          value?: number;
+          expected_value?: number;
           probability?: number | null;
           notes?: string | null;
           assigned_to?: string | null;
