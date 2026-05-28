@@ -42,8 +42,12 @@ export const Payments: React.FC = () => {
   const [leadId, setLeadId] = useState("");
   const [notes, setNotes] = useState("");
 
-  // Accountant checking helper
-  const isAccountant = role === "accountant" || role === "admin";
+  // Permissions helpers
+  const isAdmin = role === "admin";
+  const isAccountantOnly = role === "accountant";
+  const canAudit = isAdmin || isAccountantOnly;
+  const canCreate = isAdmin || role === "sales" || role === "team_lead";
+
 
   // Fetch Payments Query
   const { data, isLoading } = useQuery({
@@ -147,10 +151,19 @@ export const Payments: React.FC = () => {
     };
 
     if (editingPayment) {
-      // Accountant updates only status or notes
-      const updates = isAccountant
-        ? { payment_status: status, notes: notes || null }
-        : { amount, payment_method: method, notes: notes || null };
+      let updates;
+      if (isAdmin) {
+        updates = {
+          amount,
+          payment_method: method,
+          payment_status: status,
+          notes: notes || null,
+        };
+      } else if (isAccountantOnly) {
+        updates = { payment_status: status, notes: notes || null };
+      } else {
+        updates = { amount, payment_method: method, notes: notes || null };
+      }
 
       updateMutation.mutate({ id: editingPayment.id, updates });
     } else {
@@ -227,7 +240,7 @@ export const Payments: React.FC = () => {
           }}
           className="text-[#C89A3D] hover:underline text-xs"
         >
-          {isAccountant ? "Đối soát Duyệt" : "Xem / Sửa"}
+          {canAudit ? "Đối soát Duyệt" : "Xem / Sửa"}
         </button>
       ),
       className: "text-right",
@@ -242,13 +255,13 @@ export const Payments: React.FC = () => {
           <h3 className="text-xl font-medium text-gray-800">
             Đối soát Thanh toán
           </h3>
-          <p className="text-xs text-gray-400 font-light">
-            {isAccountant
-              ? "Phân quyền Kế toán: Toàn quyền đối soát khớp tiền ngân hàng và duyệt trạng thái đơn hàng."
+          <p className="text-xs text-gray-400 font-light mt-0.5">
+            {canAudit
+              ? "Phân quyền Kế toán/Admin: Đối soát khớp tiền ngân hàng và duyệt trạng thái đơn hàng."
               : "Ghi nhận lịch sử giao dịch và đặt cọc yến sào của khách hàng tiềm năng."}
           </p>
         </div>
-        {!isAccountant && (
+        {canCreate && (
           <Button onClick={() => setModalOpen(true)}>
             Ghi nhận Thanh toán
           </Button>
@@ -318,14 +331,14 @@ export const Payments: React.FC = () => {
             <div>
               <h3 className="text-base font-medium text-gray-900">
                 {editingPayment
-                  ? isAccountant
+                  ? canAudit
                     ? "Đối soát & Phê duyệt Giao dịch"
                     : "Chi tiết giao dịch Thanh toán"
                   : "Ghi nhận giao dịch mới"}
               </h3>
               <p className="text-xs text-gray-400 font-light mt-0.5">
-                {isAccountant
-                  ? "Kế toán đối soát sao kê ngân hàng và cập nhật chính xác trạng thái."
+                {canAudit
+                  ? "Đối soát sao kê ngân hàng và cập nhật chính xác trạng thái giao dịch."
                   : "Sales nhập đúng số tiền thực thu hoặc tiền cọc từ khách hàng."}
               </p>
             </div>
@@ -354,7 +367,7 @@ export const Payments: React.FC = () => {
                 <Input
                   label="Số tiền giao dịch (VND) *"
                   type="number"
-                  disabled={editingPayment && isAccountant}
+                  disabled={editingPayment && isAccountantOnly}
                   value={amount}
                   onChange={(e) => setAmount(Number(e.target.value))}
                   placeholder="5000000"
@@ -365,7 +378,7 @@ export const Payments: React.FC = () => {
                     Phương thức
                   </label>
                   <select
-                    disabled={editingPayment && isAccountant}
+                    disabled={editingPayment && isAccountantOnly}
                     value={method}
                     onChange={(e: any) => setMethod(e.target.value)}
                     className="w-full px-4 py-2.5 rounded-xl border border-gray-200 bg-white/50 text-sm font-light focus:border-[#C89A3D] outline-none disabled:opacity-50"
@@ -377,8 +390,8 @@ export const Payments: React.FC = () => {
                 </div>
               </div>
 
-              {/* Accountant specific confirmation field */}
-              {isAccountant && (
+              {/* Accountant/Admin specific confirmation field */}
+              {canAudit && (
                 <div className="w-full flex flex-col space-y-1.5 p-3 bg-[#F9F5EE] border border-[#EFEAE0] rounded-xl">
                   <label className="text-xs font-medium text-amber-800 uppercase tracking-wider">
                     KẾ TOÁN: TRẠNG THÁI DUYỆT
