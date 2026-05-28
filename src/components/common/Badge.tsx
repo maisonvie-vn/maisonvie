@@ -5,6 +5,7 @@ type BadgeVariant =
   | "vip"
   | "retail"
   | "agency"
+  | "agent"
   | "high"
   | "medium"
   | "low"
@@ -31,6 +32,7 @@ export const Badge: React.FC<BadgeProps> = ({
       case "retail":
         return "bg-emerald-100 text-emerald-800 border border-emerald-200";
       case "agency":
+      case "agent":
         return "bg-blue-100 text-blue-800 border border-blue-200";
       case "high":
       case "error":

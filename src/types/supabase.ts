@@ -158,12 +158,8 @@ export interface Database {
           phone_primary: string;
           phone_secondary: string | null;
           email: string | null;
-          segment: "vip" | "retail" | "agency";
-          product_interest:
-            | "raw_nest"
-            | "cooked_nest"
-            | "processed_nest"
-            | null;
+          segment: "vip" | "retail" | "agent";
+          product_interests: ("raw_nest" | "stewed_nest" | "refined_nest")[];
           status: string;
           notes: string | null;
           created_at: string;
@@ -179,12 +175,8 @@ export interface Database {
           phone_primary: string;
           phone_secondary?: string | null;
           email?: string | null;
-          segment?: "vip" | "retail" | "agency";
-          product_interest?:
-            | "raw_nest"
-            | "cooked_nest"
-            | "processed_nest"
-            | null;
+          segment?: "vip" | "retail" | "agent";
+          product_interests?: ("raw_nest" | "stewed_nest" | "refined_nest")[];
           status?: string;
           notes?: string | null;
           created_at?: string;
@@ -200,12 +192,8 @@ export interface Database {
           phone_primary?: string;
           phone_secondary?: string | null;
           email?: string | null;
-          segment?: "vip" | "retail" | "agency";
-          product_interest?:
-            | "raw_nest"
-            | "cooked_nest"
-            | "processed_nest"
-            | null;
+          segment?: "vip" | "retail" | "agent";
+          product_interests?: ("raw_nest" | "stewed_nest" | "refined_nest")[];
           status?: string;
           notes?: string | null;
           created_at?: string;

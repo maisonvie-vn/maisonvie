@@ -8,8 +8,8 @@ export type UpdateTables<T extends keyof Database["public"]["Tables"]> =
   Database["public"]["Tables"][T]["Update"];
 
 export type UserRole = "admin" | "team_lead" | "sales" | "accountant";
-export type SegmentType = "vip" | "retail" | "agency";
-export type ProductInterestType = "raw_nest" | "cooked_nest" | "processed_nest";
+export type SegmentType = "vip" | "retail" | "agent";
+export type ProductInterestType = "raw_nest" | "stewed_nest" | "refined_nest";
 export type TaskPriorityType = "low" | "medium" | "high";
 export type TaskStatusType = "todo" | "in_progress" | "completed" | "overdue";
 export type PaymentMethodType = "bank_transfer" | "cash" | "cod";

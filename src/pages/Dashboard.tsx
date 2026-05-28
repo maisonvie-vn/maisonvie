@@ -42,8 +42,8 @@ export const Dashboard: React.FC = () => {
     switch (segment) {
       case "vip":
         return <Badge variant="vip">VIP</Badge>;
-      case "agency":
-        return <Badge variant="agency">Đại lý</Badge>;
+      case "agent":
+        return <Badge variant="agent">Đại lý</Badge>;
       default:
         return <Badge variant="retail">Khách lẻ</Badge>;
     }

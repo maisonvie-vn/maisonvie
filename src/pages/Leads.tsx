@@ -45,10 +45,10 @@ export const Leads: React.FC = () => {
   const [fullName, setFullName] = useState("");
   const [phone, setPhone] = useState("");
   const [email, setEmail] = useState("");
-  const [segment, setSegment] = useState<"vip" | "retail" | "agency">("retail");
+  const [segment, setSegment] = useState<"vip" | "retail" | "agent">("retail");
   const [status, setStatus] = useState("new");
   const [productInterest, setProductInterest] = useState<
-    "raw_nest" | "cooked_nest" | "processed_nest" | ""
+    "raw_nest" | "stewed_nest" | "refined_nest" | ""
   >("");
   const [notes, setNotes] = useState("");
 
@@ -174,7 +174,7 @@ export const Leads: React.FC = () => {
     setEmail(lead.email || "");
     setSegment(lead.segment);
     setStatus(lead.status);
-    setProductInterest(lead.product_interest || "");
+    setProductInterest(lead.product_interests?.[0] || "");
     setNotes(lead.notes || "");
     setModalOpen(true);
   };
@@ -202,7 +202,7 @@ export const Leads: React.FC = () => {
       email: email || null,
       segment,
       status,
-      product_interest: productInterest || null,
+      product_interests: productInterest ? [productInterest] : [],
       notes: notes || null,
       assigned_to: userId,
     };
@@ -234,7 +234,7 @@ export const Leads: React.FC = () => {
       "Phân khúc":
         l.segment === "vip"
           ? "VIP"
-          : l.segment === "agency"
+          : l.segment === "agent"
             ? "Đại lý"
             : "Khách lẻ",
       "Trạng thái":
@@ -244,11 +244,13 @@ export const Leads: React.FC = () => {
             ? "Đã liên hệ"
             : "Đơn hàng thành công",
       "Sản phẩm quan tâm":
-        l.product_interest === "raw_nest"
+        l.product_interests?.includes("raw_nest")
           ? "Yến thô"
-          : l.product_interest === "cooked_nest"
+          : l.product_interests?.includes("stewed_nest")
             ? "Yến chưng sẵn"
-            : "Yến tinh chế",
+            : l.product_interests?.includes("refined_nest")
+              ? "Yến tinh chế"
+              : "Không có",
       "Ghi chú": l.notes || "",
     }));
 
@@ -298,7 +300,7 @@ export const Leads: React.FC = () => {
                 row["Phân khúc"] === "VIP"
                   ? "vip"
                   : row["Phân khúc"] === "Đại lý"
-                    ? "agency"
+                    ? "agent"
                     : "retail",
               status: "new",
               notes: row["Ghi chú"] || row["notes"] || null,
@@ -344,8 +346,8 @@ export const Leads: React.FC = () => {
       header: "Phân khúc",
       accessor: (row) => {
         if (row.segment === "vip") return <Badge variant="vip">VIP</Badge>;
-        if (row.segment === "agency")
-          return <Badge variant="agency">Đại lý</Badge>;
+        if (row.segment === "agent")
+          return <Badge variant="agent">Đại lý</Badge>;
         return <Badge variant="retail">Khách lẻ</Badge>;
       },
     },
@@ -454,7 +456,7 @@ export const Leads: React.FC = () => {
           <option value="">Tất cả Phân khúc</option>
           <option value="vip">Phân khúc VIP</option>
           <option value="retail">Phân khúc Khách lẻ</option>
-          <option value="agency">Phân khúc Đại lý</option>
+          <option value="agent">Phân khúc Đại lý</option>
         </select>
 
         <div className="text-right text-xs text-gray-400 font-light">
@@ -544,7 +546,7 @@ export const Leads: React.FC = () => {
                   >
                     <option value="retail">Khách lẻ</option>
                     <option value="vip">VIP</option>
-                    <option value="agency">Đại lý</option>
+                    <option value="agent">Đại lý</option>
                   </select>
                 </div>
 
@@ -559,8 +561,8 @@ export const Leads: React.FC = () => {
                   >
                     <option value="">Không có</option>
                     <option value="raw_nest">Yến sào thô</option>
-                    <option value="cooked_nest">Yến chưng sẵn</option>
-                    <option value="processed_nest">Yến tinh chế</option>
+                    <option value="stewed_nest">Yến chưng sẵn</option>
+                    <option value="refined_nest">Yến tinh chế</option>
                   </select>
                 </div>
               </div>
