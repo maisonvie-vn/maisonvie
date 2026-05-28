@@ -6,11 +6,10 @@ import type {
   UpdateTables,
 } from "../../types";
 
-export const getPipelineStages = async (orgId: string) => {
+export const getPipelineStages = async () => {
   const { data, error } = await supabase
     .from("pipeline_stages")
     .select("*")
-    .eq("organization_id", orgId)
     .order("order_num", { ascending: true });
 
   if (error) throw error;
@@ -18,18 +17,15 @@ export const getPipelineStages = async (orgId: string) => {
 };
 
 export const getOpportunities = async ({
-  orgId,
   userId = "",
   userRole = "sales",
 }: {
-  orgId: string;
   userId?: string;
   userRole?: string;
 }) => {
   let query = supabase
     .from("opportunities")
     .select("*, leads(full_name, phone_primary, segment)")
-    .eq("organization_id", orgId)
     .is("deleted_at", null);
 
   // Apply role filtering to be extremely safe

@@ -18,7 +18,6 @@ import type { Column } from "../components/common/DataTable";
 
 export const Payments: React.FC = () => {
   const { profile, role } = useAuth();
-  const orgId = profile?.organization_id || "";
   const userId = profile?.id || "";
 
   const { showToast } = useToast();
@@ -50,7 +49,6 @@ export const Payments: React.FC = () => {
   const { data, isLoading } = useQuery({
     queryKey: [
       "payments",
-      orgId,
       page,
       statusFilter,
       methodFilter,
@@ -59,7 +57,6 @@ export const Payments: React.FC = () => {
     ],
     queryFn: () =>
       getPayments({
-        orgId,
         page,
         limit: 10,
         status: statusFilter,
@@ -67,15 +64,15 @@ export const Payments: React.FC = () => {
         userId,
         userRole: role || "sales",
       }),
-    enabled: !!orgId,
+    enabled: !!userId,
   });
 
   // Fetch Leads List for Form dropdown link
   const { data: leads } = useQuery({
-    queryKey: ["allLeadsListForPayments", orgId],
+    queryKey: ["allLeadsListForPayments"],
     queryFn: () =>
       getLeads({ page: 1, limit: 100, userId, userRole: role || "sales" }),
-    enabled: !!orgId,
+    enabled: !!userId,
   });
 
   // Mutates
@@ -141,7 +138,6 @@ export const Payments: React.FC = () => {
     }
 
     const payload = {
-      organization_id: orgId,
       lead_id: leadId,
       amount,
       payment_method: method,

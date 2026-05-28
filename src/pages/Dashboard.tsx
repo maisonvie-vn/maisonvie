@@ -18,14 +18,13 @@ import {
 
 export const Dashboard: React.FC = () => {
   const { profile, role } = useAuth();
-  const orgId = profile?.organization_id || "";
   const userId = profile?.id || "";
 
   const { data, isLoading, error } = useQuery({
-    queryKey: ["dashboardStats", orgId, userId, role],
+    queryKey: ["dashboardStats", userId, role],
     queryFn: () =>
-      getDashboardStats({ orgId, userId, userRole: role || "sales" }),
-    enabled: !!orgId,
+      getDashboardStats({ userId, userRole: role || "sales" }),
+    enabled: !!userId,
   });
 
   const getPriorityBadge = (priority: string) => {

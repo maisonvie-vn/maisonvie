@@ -22,7 +22,6 @@ import Papa from "papaparse";
 
 export const Leads: React.FC = () => {
   const { profile, role } = useAuth();
-  const orgId = profile?.organization_id || "";
   const userId = profile?.id || "";
 
   const { showToast } = useToast();
@@ -95,7 +94,6 @@ export const Leads: React.FC = () => {
   const { data, isLoading } = useQuery({
     queryKey: [
       "leads",
-      orgId,
       page,
       debouncedSearch,
       statusFilter,
@@ -113,7 +111,7 @@ export const Leads: React.FC = () => {
         userId,
         userRole: role || "sales",
       }),
-    enabled: !!orgId,
+    enabled: !!userId,
   });
 
   // Mutates
@@ -199,7 +197,6 @@ export const Leads: React.FC = () => {
     }
 
     const payload = {
-      organization_id: orgId,
       full_name: fullName,
       phone_primary: normalizePhone(phone),
       email: email || null,
@@ -294,7 +291,6 @@ export const Leads: React.FC = () => {
             if (!rawName || !rawPhone) continue;
 
             await createLead({
-              organization_id: orgId,
               full_name: rawName,
               phone_primary: normalizePhone(rawPhone),
               email: row["Email"] || row["email"] || null,

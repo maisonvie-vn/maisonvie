@@ -9,25 +9,23 @@ import Badge from "../components/common/Badge";
 
 export const Settings: React.FC = () => {
   const { profile } = useAuth();
-  const orgId = profile?.organization_id || "";
 
   const [activeTab, setActiveTab] = useState<"roles" | "audit">("roles");
 
   // Fetch Audit Logs Query (Only for Admin)
   const { data: auditLogs, isLoading: auditLoading } = useQuery({
-    queryKey: ["auditLogs", orgId],
+    queryKey: ["auditLogs"],
     queryFn: async () => {
       const { data, error } = await supabase
         .from("activity_logs")
         .select("*")
-        .eq("organization_id", orgId)
         .order("created_at", { ascending: false })
         .limit(30);
 
       if (error) throw error;
       return data;
     },
-    enabled: !!orgId && activeTab === "audit",
+    enabled: activeTab === "audit" && !!profile?.id,
   });
 
   return (

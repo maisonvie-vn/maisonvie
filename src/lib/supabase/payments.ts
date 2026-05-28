@@ -2,7 +2,6 @@ import { supabase } from "./client";
 import type { Payment, InsertTables, UpdateTables } from "../../types";
 
 export const getPayments = async ({
-  orgId,
   page = 1,
   limit = 10,
   status = "",
@@ -10,7 +9,6 @@ export const getPayments = async ({
   userId = "",
   userRole = "sales",
 }: {
-  orgId: string;
   page?: number;
   limit?: number;
   status?: string;
@@ -23,8 +21,7 @@ export const getPayments = async ({
   // Query includes details about the lead
   let query = supabase
     .from("subscriptions")
-    .select("*, leads(full_name, phone_primary)", { count: "exact" })
-    .eq("organization_id", orgId);
+    .select("*, leads(full_name, phone_primary)", { count: "exact" });
 
   // Filters
   if (status) {

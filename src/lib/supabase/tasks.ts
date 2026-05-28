@@ -2,13 +2,11 @@ import { supabase } from "./client";
 import type { Task, InsertTables, UpdateTables } from "../../types";
 
 export const getTasks = async ({
-  orgId,
   userId = "",
   userRole = "sales",
   status = "",
   priority = "",
 }: {
-  orgId: string;
   userId?: string;
   userRole?: string;
   status?: string;
@@ -16,8 +14,7 @@ export const getTasks = async ({
 }) => {
   let query = supabase
     .from("tasks")
-    .select("*, leads(full_name)")
-    .eq("organization_id", orgId);
+    .select("*, leads(full_name)");
 
   // Apply filters
   if (status) {

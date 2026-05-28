@@ -18,7 +18,6 @@ import ConfirmDialog from "../components/common/ConfirmDialog";
 
 export const Tasks: React.FC = () => {
   const { profile, role } = useAuth();
-  const orgId = profile?.organization_id || "";
   const userId = profile?.id || "";
 
   const { showToast } = useToast();
@@ -43,24 +42,23 @@ export const Tasks: React.FC = () => {
 
   // Fetch Tasks Query
   const { data: tasks, isLoading } = useQuery({
-    queryKey: ["tasks", orgId, userId, role, statusFilter, priorityFilter],
+    queryKey: ["tasks", userId, role, statusFilter, priorityFilter],
     queryFn: () =>
       getTasks({
-        orgId,
         userId,
         userRole: role || "sales",
         status: statusFilter,
         priority: priorityFilter,
       }),
-    enabled: !!orgId,
+    enabled: !!userId,
   });
 
   // Fetch Leads List for form link dropdown
   const { data: leads } = useQuery({
-    queryKey: ["allLeadsListForTasks", orgId],
+    queryKey: ["allLeadsListForTasks"],
     queryFn: () =>
       getLeads({ page: 1, limit: 100, userId, userRole: role || "sales" }),
-    enabled: !!orgId,
+    enabled: !!userId,
   });
 
   // Mutates
@@ -130,7 +128,6 @@ export const Tasks: React.FC = () => {
     }
 
     const payload = {
-      organization_id: orgId,
       title,
       description: description || null,
       priority,

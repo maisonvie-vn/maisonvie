@@ -188,7 +188,6 @@ const KanbanColumn: React.FC<KanbanColumnProps> = ({
 // 3. Main Page Component
 export const Opportunities: React.FC = () => {
   const { profile, role } = useAuth();
-  const orgId = profile?.organization_id || "";
   const userId = profile?.id || "";
   const fullName = profile?.full_name || "";
 
@@ -216,23 +215,23 @@ export const Opportunities: React.FC = () => {
 
   // Queries
   const { data: stages, isLoading: stagesLoading } = useQuery({
-    queryKey: ["pipelineStages", orgId],
-    queryFn: () => getPipelineStages(orgId),
-    enabled: !!orgId,
+    queryKey: ["pipelineStages"],
+    queryFn: () => getPipelineStages(),
+    enabled: !!userId,
   });
 
   const { data: opportunities, isLoading: oppsLoading } = useQuery({
-    queryKey: ["opportunities", orgId, userId, role],
+    queryKey: ["opportunities", userId, role],
     queryFn: () =>
-      getOpportunities({ orgId, userId, userRole: role || "sales" }),
-    enabled: !!orgId,
+      getOpportunities({ userId, userRole: role || "sales" }),
+    enabled: !!userId,
   });
 
   const { data: leads } = useQuery({
-    queryKey: ["allLeadsList", orgId],
+    queryKey: ["allLeadsList"],
     queryFn: () =>
       getLeads({ page: 1, limit: 100, userId, userRole: role || "sales" }),
-    enabled: !!orgId,
+    enabled: !!userId,
   });
 
   // Mutate Stage drag drop
@@ -263,10 +262,10 @@ export const Opportunities: React.FC = () => {
 
   // Realtime pessimistic locks setup
   useEffect(() => {
-    if (!orgId) return;
+    if (!userId) return;
 
     // Create a broadcast channel for kanban locks
-    const channel = supabase.channel(`kanban_locks_${orgId}`);
+    const channel = supabase.channel(`kanban_locks`);
 
     channel
       .on("broadcast", { event: "lock" }, (payload: any) => {
@@ -286,10 +285,10 @@ export const Opportunities: React.FC = () => {
     return () => {
       supabase.removeChannel(channel);
     };
-  }, [orgId]);
+  }, [userId]);
 
   const sendLockBroadcast = (cardId: string) => {
-    const channel = supabase.channel(`kanban_locks_${orgId}`);
+    const channel = supabase.channel(`kanban_locks`);
     channel.send({
       type: "broadcast",
       event: "lock",
@@ -300,7 +299,7 @@ export const Opportunities: React.FC = () => {
   };
 
   const sendUnlockBroadcast = (cardId: string) => {
-    const channel = supabase.channel(`kanban_locks_${orgId}`);
+    const channel = supabase.channel(`kanban_locks`);
     channel.send({
       type: "broadcast",
       event: "unlock",
@@ -349,7 +348,6 @@ export const Opportunities: React.FC = () => {
     }
 
     const payload = {
-      organization_id: orgId,
       lead_id: leadId,
       stage_id: stageId,
       title,

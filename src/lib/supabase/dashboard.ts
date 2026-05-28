@@ -2,11 +2,9 @@ import { supabase } from "./client";
 import type { Opportunity, Task } from "../../types";
 
 export const getDashboardStats = async ({
-  orgId,
   userId = "",
   userRole = "sales",
 }: {
-  orgId: string;
   userId?: string;
   userRole?: string;
 }) => {
@@ -27,7 +25,6 @@ export const getDashboardStats = async ({
     .from("leads")
     .select("id", { count: "exact" })
     .is("deleted_at", null)
-    .eq("organization_id", orgId)
     .gte("created_at", sevenDaysAgo);
 
   if (userRole === "sales" && userId) {
@@ -40,7 +37,6 @@ export const getDashboardStats = async ({
     .from("opportunities")
     .select("id, value", { count: "exact" })
     .is("deleted_at", null)
-    .eq("organization_id", orgId)
     .is("closed_at", null);
 
   if (userRole === "sales" && userId) {
@@ -57,7 +53,6 @@ export const getDashboardStats = async ({
   let revQuery = supabase
     .from("subscriptions")
     .select("amount")
-    .eq("organization_id", orgId)
     .eq("status", "completed")
     .gte("created_at", firstDayOfMonth);
 
@@ -76,7 +71,6 @@ export const getDashboardStats = async ({
     .from("opportunities")
     .select("*, leads(full_name, phone_primary)")
     .is("deleted_at", null)
-    .eq("organization_id", orgId)
     .order("created_at", { ascending: false })
     .limit(5);
 
@@ -97,7 +91,6 @@ export const getDashboardStats = async ({
   let todayTasksQuery = supabase
     .from("tasks")
     .select("*, leads(full_name)")
-    .eq("organization_id", orgId)
     .lte("due_date", todayEnd)
     .neq("status", "completed")
     .order("priority", { ascending: false })
@@ -112,14 +105,12 @@ export const getDashboardStats = async ({
   const { data: stages } = await supabase
     .from("pipeline_stages")
     .select("id, name")
-    .eq("organization_id", orgId)
     .order("order_num", { ascending: true });
 
   let distQuery = supabase
     .from("opportunities")
     .select("stage_id, value")
-    .is("deleted_at", null)
-    .eq("organization_id", orgId);
+    .is("deleted_at", null);
 
   if (userRole === "sales" && userId) {
     distQuery = distQuery.eq("assigned_to", userId);
